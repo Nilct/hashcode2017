@@ -77,7 +77,7 @@ public class Hash {
     public static void main(String[] args) {
         Hash h = new Hash();
         //String s= "C:\\Users\\Camille\\IdeaProjects\\hashcode2017\\data\\test";
-        String s= "/home/loic/Bureau/hashcode2017/data/me_at_the_zoo";
+        String s= args[0];
         h.load(s);
     }
 }
