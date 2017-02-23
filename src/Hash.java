@@ -27,6 +27,7 @@ public class Hash {
     int defaultSizeCache = 0;
     ArrayList<Video> listVideo = new ArrayList<Video>();
     ArrayList<EndPoint> listEndPoint = new ArrayList<EndPoint>();
+    ArrayList<Cache> listCache = new ArrayList<Cache>();
 
     public Hash() {
 
@@ -59,6 +60,10 @@ public class Hash {
           nbCaches = Integer.parseInt(parts[3]);
           defaultSizeCache = Integer.parseInt(parts[4]);
           System.out.printf("Encoded : %d %d %d %d %d \n", nbVideo, nbEndpoints, nbRequestDescription, nbCaches, defaultSizeCache );
+
+          for(int c = 0; c < nbCaches ; c++){
+            listCache.add(new Cache(c, defaultSizeCache));
+          }
 
           // Read second line
           s= br.readLine();
