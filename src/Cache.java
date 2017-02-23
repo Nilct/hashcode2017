@@ -6,11 +6,11 @@ import java.util.ArrayList;
 public class Cache {
     int id;
     ArrayList<Integer> listOfVideo= new ArrayList<Integer>();
-    int latency;
     int availSpace;
 
-    public Cache(int id, int l, int a) {
-        this.id= id; latency= l; availSpace= a;
+    public Cache(int id, int a) {
+        this.id= id; availSpace= a;
+        System.out.printf("Cache crée : id : %d , availSpace : %d \n", id, availSpace );
     }
 
     public boolean addVideo(Video v) {

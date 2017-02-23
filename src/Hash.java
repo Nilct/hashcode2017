@@ -16,6 +16,7 @@ public class Hash {
     int defaultSizeCache = 0;
     ArrayList<Video> listVideo = new ArrayList<Video>();
     ArrayList<EndPoint> listEndPoint = new ArrayList<EndPoint>();
+    ArrayList<Cache> listCache = new ArrayList<Cache>();
 
     boolean DEBUG= true;
 
@@ -50,7 +51,7 @@ public class Hash {
             // for all ep wanting video, update cache list
             // cache list initially ordered
             ArrayList<CacheValue> listOfCacheValue= createCacheValue();
-
+            /*
             for (int j = 0; j < v.listOfRequest.size(); j++) { // treat all request for this video
                 r= v.listOfRequest.get(j);
                 ep= listEndPoint.get(r.endPoint); // TODO not comparable !!!
@@ -65,11 +66,11 @@ public class Hash {
                     //}
                 }
             }
+            */
         }
     }
 
 
-    /****************************************************************/
 
     private int getInt(final String value) {
         return Integer.parseInt(value);
@@ -98,6 +99,10 @@ public class Hash {
           nbCaches = Integer.parseInt(parts[3]);
           defaultSizeCache = Integer.parseInt(parts[4]);
           System.out.printf("Encoded : %d %d %d %d %d \n", nbVideo, nbEndpoints, nbRequestDescription, nbCaches, defaultSizeCache );
+
+          for(int c = 0; c < nbCaches ; c++){
+            listCache.add(new Cache(c, defaultSizeCache));
+          }
 
           // Read second line
           s= br.readLine();
