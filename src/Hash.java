@@ -9,6 +9,15 @@ import java.util.ArrayList;
  * Created by Camille on 23/02/2017.
  */
 public class Hash {
+/*
+    ● V (1 ≤ V ≤ 10000) - the number of videos
+● E (1 ≤ E ≤ 1000) - the number of endpoints
+● R (1 ≤ R ≤ 1000000) - the number of request descriptions
+● C (1 ≤ C ≤ 1000) - the number of cache servers
+● X (1 ≤ X ≤ 500000) - the capacity of each cache server in megabytes
+*/
+
+
 
 
     int nbVideo = 0;
@@ -87,7 +96,7 @@ public class Hash {
             e.printStackTrace();
         }
         return true;
-    }
+    }/
 
 
     public static void main(String[] args) {
