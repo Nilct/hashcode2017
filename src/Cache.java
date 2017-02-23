@@ -10,7 +10,7 @@ public class Cache {
 
     public Cache(int id, int a) {
         this.id= id; availSpace= a;
-        System.out.printf("Cache crée : id : %d , availSpace : %d \n", id, availSpace );
+        // System.out.printf("Cache crée : id : %d , availSpace : %d \n", id, availSpace );
     }
 
     public boolean addVideo(Video v) {
