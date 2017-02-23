@@ -8,6 +8,7 @@ public class Request implements Comparable<Request> {
 
     public Request(int no, int ep, int idv) {
         noOf= no; endPoint= ep; idVideo= idv;
+        System.out.printf("Request créée : noOf : %d, From endpoint : %d about video n: %d\n", no, endPoint,idVideo );
     }
 
     @Override

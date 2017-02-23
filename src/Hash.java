@@ -147,6 +147,23 @@ public class Hash {
           System.out.printf("Last Endpoint : id : %d, countNotDefault = %d\n", listEndPoint.get(listEndPoint.size()-1).id, listEndPoint.get(listEndPoint.size()-1).countNotDefault());
 
 
+          // Read Requests entries
+          for(int c = 0; c < nbRequestDescription ; c++){
+            // Read endpoints line initializer
+
+            s= br.readLine();
+            parts = s.split(" ");
+
+            int idVideo = Integer.parseInt(parts[0]);
+            int fromEndPoint = Integer.parseInt(parts[1]);
+            int requestsCount = Integer.parseInt(parts[2]);
+
+            Request requestToAdd = new Request(requestsCount, fromEndPoint, idVideo);
+            listVideo.get(idVideo).addRequest(requestToAdd);
+            // 3 0 1500 ||| 1500 requests for video 3 coming from endpoint 0.
+
+          }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
