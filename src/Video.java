@@ -4,12 +4,12 @@ import java.math.*;
 import java.util.ArrayList;
 
 public class Video {
-
-    public float size;
+    int id;
+    public int size;
     public ArrayList<Integer> cache;
 
-    Video(float sizeInput){
-      size = sizeInput;
+    Video(int id, int s){
+      this.id= id; size = s;
       cache = new ArrayList<Integer>();
     }
 
