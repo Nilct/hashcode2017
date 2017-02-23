@@ -40,11 +40,12 @@ public class Hash {
         // order
         Collections.sort(listVideo);
         if (DEBUG) { // Check order
-            int size= listVideo.size();
-            System.out.printf("video 0 : %d, video n-1: %d\n", listVideo.get(0).totalRequest, listVideo.get(nbVideo).totalRequest);
+            System.out.printf("video %d : %d, video %d: %d\n", listVideo.get(0).id, listVideo.get(0).totalRequest,
+                    listVideo.get(nbVideo-1).id,listVideo.get(nbVideo-1).totalRequest);
         }
         for (int i = 0; i < nbVideo; i++) {
             Video v= listVideo.get(i);
+            if (v.totalRequest==0) continue;
             Request r;
             EndPoint ep;
             CacheValue cv;
