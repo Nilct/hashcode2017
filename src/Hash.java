@@ -55,6 +55,8 @@ public class Hash {
 
             for (int j = 0; j < v.listOfRequest.size(); j++) { // treat all request for this video
                 r= v.listOfRequest.get(j);
+
+                 System.out.printf("Score for request %d : %d\n", j, r.eval(listVideo, listEndPoint));
                 ep= listEndPoint.get(r.endPoint); // TODO not comparable !!!
                 if (ep.id != r.endPoint) System.err.printf("ERROR ENDPOINT - sort FORBIDDEN\n");
                 for (int k = 0; k < nbCaches; k++) { // all cache,
@@ -74,6 +76,7 @@ public class Hash {
                 // add video to cache
                 Cache c= listCache.get(listOfCacheValue.get(0).id); // TODO check id
                 c.addVideo(v);
+                v.addCacheServer(c.id);
             }
         }
     }
@@ -178,6 +181,8 @@ public class Hash {
         }
         return true;
     }
+
+
 
     public boolean save(String name) {
         try {

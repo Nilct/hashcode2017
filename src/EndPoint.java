@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+import java.math.*;
 /**
  * Created by Camille on 23/02/2017.
  */
@@ -32,5 +33,22 @@ public class EndPoint {
         }
       }
       return result;
+    }
+
+    public int getMinimumLatencyPositive(){
+      int minimum = -1;
+      for (int c = 0; c < latency.length; c++){
+        if (latency[c]!=DEFAULT) {
+            if (minimum == -1){
+              minimum = latency[c];
+            }
+            minimum = Math.min(minimum, latency[c]);
+        }
+      }
+      if (minimum == -1){
+        minimum = DEFAULT;
+      }
+
+      return minimum;
     }
 }
