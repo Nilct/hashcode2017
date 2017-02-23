@@ -1,5 +1,9 @@
 import java.io.*;
 import java.util.Scanner;
+import java.util.*;
+import java.io.*;
+import java.math.*;
+import java.util.ArrayList;
 
 /**
  * Created by Camille on 23/02/2017.
@@ -12,6 +16,7 @@ public class Hash {
     int nbRequestDescription = 0;
     int nbCaches = 0;
     int defaultSizeCache = 0;
+    ArrayList<Video> listVideo = new ArrayList<Video>();
 
     public Hash() {
 
@@ -45,7 +50,18 @@ public class Hash {
           defaultSizeCache = Integer.parseInt(parts[4]);
           System.out.printf("Encoded : %d %d %d %d %d \n", nbVideo, nbEndpoints, nbRequestDescription, nbCaches, defaultSizeCache );
 
+          // Read second line
+          s= br.readLine();
+          System.out.printf("%s\n", s);
+          parts = s.split(" ");
 
+          for(int c = 0; c < parts.length ; c++){
+            listVideo.add(new Video(c, Integer.parseInt(parts[c])));
+          }
+
+          System.out.printf("%d Videos detected \n", listVideo.size());
+          System.out.printf("First video : id : %d, size : %d Mb\n", listVideo.get(0).id, listVideo.get(0).size);
+          System.out.printf("Last video : id : %d, size : %d Mb\n", listVideo.get(listVideo.size()-1).id, listVideo.get(listVideo.size()-1).size);
 
 
 
