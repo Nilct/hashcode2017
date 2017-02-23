@@ -5,7 +5,7 @@ import java.util.ArrayList;
  */
 public class Cache {
     int id;
-    ArrayList<int> listOfVideo;
+    ArrayList<Integer> listOfVideo= new ArrayList<Integer>();
     int latency;
     int availSpace;
 
