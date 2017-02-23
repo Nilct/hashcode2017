@@ -91,13 +91,12 @@ public class Hash {
 
     public boolean load(String name) {
         String s1= name + ".in";
-        System.out.printf("%s\n", s1);
+        // System.out.printf("%s\n", s1);
         try (BufferedReader br = new BufferedReader(new FileReader(name + ".in"))) {
 
 
           // Read first line
           String s= br.readLine();
-          System.out.printf("%s\n", s);
 
           String[] parts = s.split(" ");
 
@@ -106,7 +105,7 @@ public class Hash {
           nbRequestDescription = Integer.parseInt(parts[2]);
           nbCaches = Integer.parseInt(parts[3]);
           defaultSizeCache = Integer.parseInt(parts[4]);
-          System.out.printf("Encoded : %d %d %d %d %d \n", nbVideo, nbEndpoints, nbRequestDescription, nbCaches, defaultSizeCache );
+          // System.out.printf("Encoded : %d %d %d %d %d \n", nbVideo, nbEndpoints, nbRequestDescription, nbCaches, defaultSizeCache );
 
           for(int c = 0; c < nbCaches ; c++){
             listCache.add(new Cache(c, defaultSizeCache));
@@ -114,29 +113,29 @@ public class Hash {
 
           // Read second line
           s= br.readLine();
-          System.out.printf("%s\n", s);
+          // System.out.printf("%s\n", s);
           parts = s.split(" ");
 
           for(int c = 0; c < parts.length ; c++){
             listVideo.add(new Video(c, Integer.parseInt(parts[c])));
           }
-
-          System.out.printf("%d Videos detected \n", listVideo.size());
-          System.out.printf("First video : id : %d, size : %d Mb\n", listVideo.get(0).id, listVideo.get(0).size);
-          System.out.printf("Last video : id : %d, size : %d Mb\n", listVideo.get(listVideo.size()-1).id, listVideo.get(listVideo.size()-1).size);
-
+          if (DEBUG) { // Check order
+            System.out.printf("%d Videos detected \n", listVideo.size());
+            System.out.printf("First video : id : %d, size : %d Mb\n", listVideo.get(0).id, listVideo.get(0).size);
+            System.out.printf("Last video : id : %d, size : %d Mb\n", listVideo.get(listVideo.size()-1).id, listVideo.get(listVideo.size()-1).size);
+          }
           // Read Endpoints entries
           for(int c = 0; c < nbEndpoints ; c++){
             // Read endpoints line initializer
 
             s= br.readLine();
-            System.out.printf("%s\n", s);
+            // System.out.printf("%s\n", s);
             parts = s.split(" ");
             int latencyDatacenter = Integer.parseInt(parts[0]);
             int nbCachesConnected = Integer.parseInt(parts[1]);
             EndPoint endpointFactory =  new EndPoint(c, latencyDatacenter, nbCaches);
 
-            System.out.printf("Endpoint crée : %d, latency : %d\n", endpointFactory.id, endpointFactory.latencyDatacenter);
+            // System.out.printf("Endpoint crée : %d, latency : %d\n", endpointFactory.id, endpointFactory.latencyDatacenter);
             for (int cache = 0; cache < nbCachesConnected; cache++) {
               String detail = br.readLine();
               String[] partsDetail = detail.split(" ");
@@ -145,15 +144,15 @@ public class Hash {
               endpointFactory.changeLatency(fromCacheID, latencyValue);
             }
 
-            System.out.printf("Endpoint %d : countNotDefault = %d\n", endpointFactory.id, endpointFactory.countNotDefault());
+            // System.out.printf("Endpoint %d : countNotDefault = %d\n", endpointFactory.id, endpointFactory.countNotDefault());
             // ajouter l'endpoint à la liste
             listEndPoint.add(endpointFactory);
           }
-
-          System.out.printf("Nombre d'Endpoint : %d\n",listEndPoint.size());
-          System.out.printf("First Endpoint : id : %d, countNotDefault = %d\n", listEndPoint.get(0).id, listEndPoint.get(0).countNotDefault());
-          System.out.printf("Last Endpoint : id : %d, countNotDefault = %d\n", listEndPoint.get(listEndPoint.size()-1).id, listEndPoint.get(listEndPoint.size()-1).countNotDefault());
-
+          if (DEBUG) { // Check order
+            System.out.printf("Nombre d'Endpoint : %d\n",listEndPoint.size());
+            System.out.printf("First Endpoint : id : %d, countNotDefault = %d\n", listEndPoint.get(0).id, listEndPoint.get(0).countNotDefault());
+            System.out.printf("Last Endpoint : id : %d, countNotDefault = %d\n", listEndPoint.get(listEndPoint.size()-1).id, listEndPoint.get(listEndPoint.size()-1).countNotDefault());
+          }
 
           // Read Requests entries
           for(int c = 0; c < nbRequestDescription ; c++){
