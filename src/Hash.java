@@ -15,6 +15,7 @@ public class Hash {
     int nbCaches = 0;
     int defaultSizeCache = 0;
     ArrayList<Video> listVideo = new ArrayList<Video>();
+    ArrayList<EndPoint> listEndPoint = new ArrayList<EndPoint>();
 
     boolean DEBUG= true;
 
@@ -111,7 +112,34 @@ public class Hash {
           System.out.printf("First video : id : %d, size : %d Mb\n", listVideo.get(0).id, listVideo.get(0).size);
           System.out.printf("Last video : id : %d, size : %d Mb\n", listVideo.get(listVideo.size()-1).id, listVideo.get(listVideo.size()-1).size);
 
+          // Read Endpoints entries
+          for(int c = 0; c < nbEndpoints ; c++){
+            // Read endpoints line initializer
 
+            s= br.readLine();
+            System.out.printf("%s\n", s);
+            parts = s.split(" ");
+            int latencyDatacenter = Integer.parseInt(parts[0]);
+            int nbCachesConnected = Integer.parseInt(parts[1]);
+            EndPoint endpointFactory =  new EndPoint(c, latencyDatacenter, nbCaches);
+
+            System.out.printf("Endpoint crée : %d, latency : %d\n", endpointFactory.id, endpointFactory.latencyDatacenter);
+            for (int cache = 0; cache < nbCachesConnected; cache++) {
+              String detail = br.readLine();
+              String[] partsDetail = detail.split(" ");
+              int fromCacheID = Integer.parseInt(partsDetail[0]);
+              int latencyValue = Integer.parseInt(partsDetail[1]);
+              endpointFactory.changeLatency(fromCacheID, latencyValue);
+            }
+
+            System.out.printf("Endpoint %d : countNotDefault = %d\n", endpointFactory.id, endpointFactory.countNotDefault());
+            // ajouter l'endpoint à la liste
+            listEndPoint.add(endpointFactory);
+          }
+
+          System.out.printf("Nombre d'Endpoint : %d\n",listEndPoint.size());
+          System.out.printf("First Endpoint : id : %d, countNotDefault = %d\n", listEndPoint.get(0).id, listEndPoint.get(0).countNotDefault());
+          System.out.printf("Last Endpoint : id : %d, countNotDefault = %d\n", listEndPoint.get(listEndPoint.size()-1).id, listEndPoint.get(listEndPoint.size()-1).countNotDefault());
 
 
         } catch (FileNotFoundException e) {
