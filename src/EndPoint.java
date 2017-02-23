@@ -4,7 +4,7 @@ import java.util.ArrayList;
  * Created by Camille on 23/02/2017.
  */
 public class EndPoint {
-    int DEFAULT = -1;
+    public final static int DEFAULT = -1;
     int id;
     int latencyDatacenter;
     int[] latency;
