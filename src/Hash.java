@@ -51,7 +51,7 @@ public class Hash {
             // for all ep wanting video, update cache list
             // cache list initially ordered
             ArrayList<CacheValue> listOfCacheValue= createCacheValue();
-
+            /*
             for (int j = 0; j < v.listOfRequest.size(); j++) { // treat all request for this video
                 r= v.listOfRequest.get(j);
                 ep= listEndPoint.get(r.endPoint); // TODO not comparable !!!
@@ -60,17 +60,17 @@ public class Hash {
                     if (ep.??. ?? == -1) continue; // cache not available
                     if (listCache.get(k).availSpace < v.size) continue; // video is too big
                     // cache : check available size vs video size, set cache value according to noOfQueries
-                    if (ep. /* TODO*/> 0) {
+                    if (ep. //TODO // > 0) {
                         cv = listOfCacheValue.get(k);
                         cv.value+= r.noOf;
                     }
                 }
             }
+            */
         }
     }
 
 
-    /****************************************************************/
 
     private int getInt(final String value) {
         return Integer.parseInt(value);
