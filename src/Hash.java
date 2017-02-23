@@ -18,12 +18,12 @@ public class Hash {
     ArrayList<EndPoint> listEndPoint = new ArrayList<EndPoint>();
     ArrayList<Cache> listCache = new ArrayList<Cache>();
 
+    ArrayList<Cache> originalCache= new ArrayList<Cache>();
+
     boolean DEBUG= true;
 
 
-    public Hash() {
-
-    }
+    public Hash() {}
 
 
     public ArrayList<CacheValue> createCacheValue() {
@@ -35,6 +35,44 @@ public class Hash {
         return ac;
     }
 
+
+    public void smartsolve() {
+        // order
+        Collections.sort(listVideo);
+        for (int i = 0; i < nbVideo; i++) {
+            Video v= listVideo.get(i);
+            if (v.totalRequest==0) continue;
+            Request r;
+            EndPoint ep;
+            CacheValue cv;
+            // for all ep wanting video, update cache list
+            // cache list initially ordered
+            ArrayList<CacheValue> listOfCacheValue= createCacheValue();
+
+            for (int j = 0; j < v.listOfRequest.size(); j++) { // treat all request for this video
+                r= v.listOfRequest.get(j);
+                ep= listEndPoint.get(r.endPoint); // TODO not comparable !!!
+                if (ep.id != r.endPoint) System.err.printf("ERROR ENDPOINT - sort FORBIDDEN\n");
+                for (int k = 0; k < nbCaches; k++) { // all cache,
+                    if (ep.latency[k] == EndPoint.DEFAULT) continue; // cache not available
+                    if (listCache.get(k).availSpace < v.size) continue; // video is too big
+                    // cache : check available size vs video size, set cache value according to noOfQueries
+                    //if (ep. > 0) { // TODO trou de mémoire ??
+                    cv = listOfCacheValue.get(k);
+                    cv.value+= r.noOf;
+                    //}
+                }
+            }
+            // sort all cachevalue
+            Collections.sort(listOfCacheValue); // TODO check
+            if (listOfCacheValue.get(0).value < listOfCacheValue.get(nbCaches-1).value) System.out.printf("ERROR------------____\n");
+            if (listOfCacheValue.get(0).value>0) { // TODO use threshold
+                // add video to cache
+                Cache c= listCache.get(listOfCacheValue.get(0).id); // TODO check id
+                c.addVideo(v);
+            }
+        }
+    }
 
     public void solve() {
         // order
@@ -79,17 +117,6 @@ public class Hash {
                 v.addCacheServer(c.id);
             }
         }
-    }
-
-
-
-    private int getInt(final String value) {
-        return Integer.parseInt(value);
-    }
-
-    private String[] getNextLineParts(final BufferedReader br) throws IOException {
-        String line = br.readLine();
-        return line.split(" ");
     }
 
     public boolean load(String name) {
@@ -138,7 +165,6 @@ public class Hash {
             int nbCachesConnected = Integer.parseInt(parts[1]);
             EndPoint endpointFactory =  new EndPoint(c, latencyDatacenter, nbCaches);
 
-            // System.out.printf("Endpoint crée : %d, latency : %d\n", endpointFactory.id, endpointFactory.latencyDatacenter);
             for (int cache = 0; cache < nbCachesConnected; cache++) {
               String detail = br.readLine();
               String[] partsDetail = detail.split(" ");
@@ -146,8 +172,7 @@ public class Hash {
               int latencyValue = Integer.parseInt(partsDetail[1]);
               endpointFactory.changeLatency(fromCacheID, latencyValue);
             }
-
-            // System.out.printf("Endpoint %d : countNotDefault = %d\n", endpointFactory.id, endpointFactory.countNotDefault());
+              
             // ajouter l'endpoint à la liste
             listEndPoint.add(endpointFactory);
           }
@@ -197,6 +222,7 @@ public class Hash {
         }
         return true;
     }
+
 
 
     public static void main(String[] args) {
