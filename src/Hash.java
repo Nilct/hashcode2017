@@ -45,7 +45,7 @@ public class Hash {
         for (int i = 0; i < nbVideo; i++) {
             Video v= listVideo.get(i);
             Request r;
-            EndPoint ep; int epId;
+            EndPoint ep;
             CacheValue cv;
             // for all ep wanting video, update cache list
             // cache list initially ordered
@@ -54,15 +54,15 @@ public class Hash {
             for (int j = 0; j < v.listOfRequest.size(); j++) { // treat all request for this video
                 r= v.listOfRequest.get(j);
                 ep= listEndPoint.get(r.endPoint); // TODO not comparable !!!
-                if (ep.id != r.endPoint) System.err.printf("ERROR ENDPOINT - sort FORBIDDE\n");
-                for (int k = 0; k < ep.noCache; k++) { // all cache,
-                    if (ep.??. ?? == -1) continue; // cache not available
+                if (ep.id != r.endPoint) System.err.printf("ERROR ENDPOINT - sort FORBIDDEN\n");
+                for (int k = 0; k < nbCaches; k++) { // all cache,
+                    if (ep.latency[k] == EndPoint.DEFAULT) continue; // cache not available
                     if (listCache.get(k).availSpace < v.size) continue; // video is too big
                     // cache : check available size vs video size, set cache value according to noOfQueries
-                    if (ep. /* TODO*/> 0) {
+                    //if (ep. > 0) { // TODO trou de mémoire ??
                         cv = listOfCacheValue.get(k);
                         cv.value+= r.noOf;
-                    }
+                    //}
                 }
             }
         }
@@ -150,11 +150,12 @@ public class Hash {
         return true;
     }
 
-    public boolean save(String name, String contents) {
+    public boolean save(String name) {
         try {
-
             FileWriter fw = new FileWriter(name + ".out");
+            for (int i = 0; i < nbCaches; i++) {
 
+            }
 
             fw.write(contents);
             fw.write(contents + "\n");
@@ -171,5 +172,7 @@ public class Hash {
         //String s= "C:\\Users\\Camille\\IdeaProjects\\hashcode2017\\data\\test";
         String s= args[0];
         h.load(s);
+        h.solve();
+        h.save(s);
     }
 }
