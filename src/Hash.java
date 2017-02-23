@@ -51,7 +51,7 @@ public class Hash {
             // for all ep wanting video, update cache list
             // cache list initially ordered
             ArrayList<CacheValue> listOfCacheValue= createCacheValue();
-            /*
+
             for (int j = 0; j < v.listOfRequest.size(); j++) { // treat all request for this video
                 r= v.listOfRequest.get(j);
                 ep= listEndPoint.get(r.endPoint); // TODO not comparable !!!
@@ -66,7 +66,14 @@ public class Hash {
                     //}
                 }
             }
-            */
+            // sort all cachevalue
+            Collections.sort(listOfCacheValue); // TODO check
+
+            if (listOfCacheValue.get(0).value>0) { // TODO use threshold
+                // add video to cache
+                Cache c= listCache.get(listOfCacheValue.get(0).id); // TODO check id
+                c.addVideo(v);
+            }
         }
     }
 
@@ -158,12 +165,10 @@ public class Hash {
     public boolean save(String name) {
         try {
             FileWriter fw = new FileWriter(name + ".out");
+            fw.write(nbCaches+"\n");
             for (int i = 0; i < nbCaches; i++) {
-
+                fw.write(listCache.get(i).output());
             }
-
-            fw.write(contents);
-            fw.write(contents + "\n");
             fw.close();
         } catch (Throwable e) {
             e.printStackTrace();

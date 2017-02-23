@@ -29,6 +29,7 @@ public class Cache {
         for (int i = 0; i < listOfVideo.size(); i++) {
             bs.append(listOfVideo.get(i)).append(" ");
         }
+        bs.append("\n");
         return bs.toString();
 
     }
