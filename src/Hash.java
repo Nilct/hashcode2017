@@ -5,6 +5,7 @@ import java.io.*;
 import java.math.*;
 import java.util.ArrayList;
 
+
 /**
  * Created by Camille on 23/02/2017.
  */
@@ -94,7 +95,7 @@ public class Hash {
             for (int j = 0; j < v.listOfRequest.size(); j++) { // treat all request for this video
                 r= v.listOfRequest.get(j);
 
-                 System.out.printf("Score for request %d : %d\n", j, r.eval(listVideo, listEndPoint));
+                //  System.out.printf("Score for request %d : %d\n", j, r.eval(listVideo, listEndPoint));
                 ep= listEndPoint.get(r.endPoint); // TODO not comparable !!!
                 if (ep.id != r.endPoint) System.err.printf("ERROR ENDPOINT - sort FORBIDDEN\n");
                 for (int k = 0; k < nbCaches; k++) { // all cache,
@@ -172,7 +173,7 @@ public class Hash {
               int latencyValue = Integer.parseInt(partsDetail[1]);
               endpointFactory.changeLatency(fromCacheID, latencyValue);
             }
-              
+
             // ajouter l'endpoint à la liste
             listEndPoint.add(endpointFactory);
           }
@@ -230,7 +231,28 @@ public class Hash {
         //String s= "C:\\Users\\Camille\\IdeaProjects\\hashcode2017\\data\\test";
         String s= args[0];
         h.load(s);
+
         h.solve();
+
+        h.generateChromosome()
+        
         h.save(s);
+    }
+
+    public String generateChromosome(){
+      boolean[] partOfChromosome = new boolean[nbCaches];
+      String chromosome;
+      StringBuilder chromosomeBuilder = new StringBuilder();
+      for (Video video : listVideo) {
+        partOfChromosome = new boolean[nbCaches];
+        for (int cache : video.cache) {
+          partOfChromosome[cache] = true;
+        }
+        for (boolean cache : partOfChromosome ) {
+          chromosomeBuilder.append(cache?"1":"0");
+        }
+      }
+      System.out.printf("%s\n", chromosomeBuilder.toString());
+      return chromosomeBuilder.toString();
     }
 }
