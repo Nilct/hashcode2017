@@ -18,6 +18,19 @@ public class Population {
          }
      }
 
+     // Create a population with a specific chromosome size
+     public Population(int populationSize, boolean initialise, int chromosomeSize) {
+         individuals = new Individual[populationSize];
+         // Initialise population
+         if (initialise) {
+             // Loop and create individuals
+             for (int i = 0; i < size(); i++) {
+                 Individual newIndividual = new Individual(chromosomeSize);
+                 saveIndividual(i, newIndividual);
+             }
+         }
+     }
+
      // Create a population with local solution
      public Population(int populationSize, boolean initialise, String chromosome) {
          individuals = new Individual[populationSize];

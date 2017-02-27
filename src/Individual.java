@@ -24,6 +24,16 @@ public class Individual {
         }
     }
 
+    // Create a local individual
+    public Individual(int chromosomeSize) {
+        defaultGeneLength = chromosomeSize;
+        genes = new byte[defaultGeneLength];
+        for (int i = 0; i < size(); i++) {
+            byte gene = (byte) Math.round(Math.random());
+            genes[i] = gene;
+        }
+    }
+
     /* Getters and setters */
     // Use this if you want to create individuals with different gene lengths
     public static void setDefaultGeneLength(int length) {

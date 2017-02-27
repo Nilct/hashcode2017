@@ -20,7 +20,7 @@ public class Hash {
     public static ArrayList<Cache> listCache = new ArrayList<Cache>();
     public static ArrayList<Cache> originalCache= new ArrayList<Cache>();
 
-    boolean DEBUG= true;
+    boolean DEBUG= false;
 
     public Hash() {}
 
@@ -223,35 +223,43 @@ public class Hash {
 
       // Parameters
       int MAXGENERATION = 5000;
+      int NOMBREINDIVIDUS = 50;
 
 
       // debutIA
       String chromosome = this.generateChromosome();
       // FitnessCalc.setSolution(chromosome);
 
-      Population myPop = new Population(50, true, chromosome);
+      Population myPop = new Population(NOMBREINDIVIDUS, true, chromosome); // Use the local solution to start
+      // Population myPop = new Population(NOMBREINDIVIDUS, true, chromosome.length()); // try to solve the problem from scratch (only IA and random)
       int generationCount = 0;
       while(generationCount < MAXGENERATION){
         generationCount++;
         myPop = Algorithm.evolvePopulation(myPop);
 
-        // Display only 1/100 message
-        if (generationCount%100 == 0){
-          System.out.println("Generation: "+generationCount);
-          if ( myPop.getFittest().getFitness() > -1 ){
-            System.out.println("Score fittest : " + myPop.getFittest().getFitness());
+        System.out.println("Generation: "+generationCount);
+        if (DEBUG) {
+          // Display only 1/100 message
+          if (generationCount%100 == 0){
+            if ( myPop.getFittest().getFitness() > -1 ){
+              System.out.println("Score fittest : " + myPop.getFittest().getFitness());
+            }
           }
         }
       }
-      System.out.println("Solution initiale : ");
-      System.out.println(chromosome);
-      System.out.println("Modification génétique :");
-      System.out.println(myPop.getFittest());
-      System.out.println("Différences : ");
-      System.out.println(compareBitwise(chromosome, myPop.getFittest().toString()));
+
+      if (DEBUG) {
+        System.out.println("Solution initiale : ");
+        System.out.println(chromosome);
+        System.out.println("Modification génétique :");
+        System.out.println(myPop.getFittest());
+        System.out.println("Différences : ");
+        System.out.println(compareBitwise(chromosome, myPop.getFittest().toString()));
+      }
 
       if (myPop.getFittest().getFitness()>0){
         System.out.println("Utilisation de la solution de l'algorithme genetique");
+        System.out.println("Score fittest : " + myPop.getFittest().getFitness());
         // Clean the listCache data
         for (Cache cache : listCache) {
           cache.resetCacheServer();
@@ -276,9 +284,9 @@ public class Hash {
 
         h.load(s); // Read data
 
-        h.solve(); // Find a local solution
-        h.solve(); // Find a local solution
-        h.solve(); // Find a local solution
+        h.smartsolve(); // Find a local solution
+        h.solve(); // update the local solution
+        h.smartsolve(); // update the local solution
 
         h.solveWithGeneticAlgorithm(); // Try to optimize the local solution
 
