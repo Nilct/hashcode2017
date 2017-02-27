@@ -7,9 +7,11 @@ public class Cache {
     int id;
     ArrayList<Integer> listOfVideo= new ArrayList<Integer>();
     int availSpace;
+    int availSpaceDefault;
 
     public Cache(int id, int a) {
         this.id= id; availSpace= a;
+        availSpaceDefault = a;
         // System.out.printf("Cache crée : id : %d , availSpace : %d \n", id, availSpace );
     }
 
@@ -21,6 +23,11 @@ public class Cache {
         listOfVideo.add(v.id);
         availSpace-= v.size;
         return true;
+    }
+
+    public void resetCacheServer(){
+      listOfVideo= new ArrayList<Integer>();
+      availSpace = availSpaceDefault;
     }
 
     public String output()  {

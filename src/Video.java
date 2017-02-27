@@ -28,6 +28,10 @@ public class Video implements Comparable<Video> {
       cache.remove(cache.indexOf(id));
     }
 
+    public void resetCacheServer(){
+      cache = new ArrayList<Integer>();
+    }
+
     @Override
     public int compareTo(Video o) {
         return o.totalRequest - totalRequest;  // TODO check

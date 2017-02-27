@@ -4,7 +4,7 @@ import java.util.*;
 import java.io.*;
 import java.math.*;
 import java.util.ArrayList;
-
+import java.util.stream.*;
 
 /**
  * Created by Camille on 23/02/2017.
@@ -13,19 +13,16 @@ public class Hash {
     int nbVideo = 0;
     int nbEndpoints = 0;
     int nbRequestDescription = 0;
-    int nbCaches = 0;
-    int defaultSizeCache = 0;
-    ArrayList<Video> listVideo = new ArrayList<Video>();
-    ArrayList<EndPoint> listEndPoint = new ArrayList<EndPoint>();
-    ArrayList<Cache> listCache = new ArrayList<Cache>();
-
-    ArrayList<Cache> originalCache= new ArrayList<Cache>();
+    public static int nbCaches = 0;
+    public static int defaultSizeCache = 0;
+    public static ArrayList<Video> listVideo = new ArrayList<Video>();
+    public static ArrayList<EndPoint> listEndPoint = new ArrayList<EndPoint>();
+    public static ArrayList<Cache> listCache = new ArrayList<Cache>();
+    public static ArrayList<Cache> originalCache= new ArrayList<Cache>();
 
     boolean DEBUG= true;
 
-
     public Hash() {}
-
 
     public ArrayList<CacheValue> createCacheValue() {
         ArrayList<CacheValue> ac= new ArrayList<CacheValue>(nbCaches);
@@ -120,14 +117,14 @@ public class Hash {
         }
     }
 
+
+    // Read input file and create object-based data
     public boolean load(String name) {
         String s1= name + ".in";
-        // System.out.printf("%s\n", s1);
+
         try (BufferedReader br = new BufferedReader(new FileReader(name + ".in"))) {
-
-
           // Read first line
-          String s= br.readLine();
+          String s = br.readLine();
 
           String[] parts = s.split(" ");
 
@@ -138,29 +135,28 @@ public class Hash {
           defaultSizeCache = Integer.parseInt(parts[4]);
           // System.out.printf("Encoded : %d %d %d %d %d \n", nbVideo, nbEndpoints, nbRequestDescription, nbCaches, defaultSizeCache );
 
-          for(int c = 0; c < nbCaches ; c++){
+          for(int c = 0; c < nbCaches; c++){
             listCache.add(new Cache(c, defaultSizeCache));
           }
 
           // Read second line
-          s= br.readLine();
-          // System.out.printf("%s\n", s);
+          s = br.readLine();
           parts = s.split(" ");
 
           for(int c = 0; c < parts.length ; c++){
             listVideo.add(new Video(c, Integer.parseInt(parts[c])));
           }
+
           if (DEBUG) { // Check order
             System.out.printf("%d Videos detected \n", listVideo.size());
             System.out.printf("First video : id : %d, size : %d Mb\n", listVideo.get(0).id, listVideo.get(0).size);
             System.out.printf("Last video : id : %d, size : %d Mb\n", listVideo.get(listVideo.size()-1).id, listVideo.get(listVideo.size()-1).size);
           }
+
           // Read Endpoints entries
           for(int c = 0; c < nbEndpoints ; c++){
-            // Read endpoints line initializer
-
-            s= br.readLine();
-            // System.out.printf("%s\n", s);
+            // Read endpoints line initialize
+            s = br.readLine();
             parts = s.split(" ");
             int latencyDatacenter = Integer.parseInt(parts[0]);
             int nbCachesConnected = Integer.parseInt(parts[1]);
@@ -174,9 +170,10 @@ public class Hash {
               endpointFactory.changeLatency(fromCacheID, latencyValue);
             }
 
-            // ajouter l'endpoint à la liste
+            // save the endpoint to the list
             listEndPoint.add(endpointFactory);
           }
+
           if (DEBUG) { // Check order
             System.out.printf("Nombre d'Endpoint : %d\n",listEndPoint.size());
             System.out.printf("First Endpoint : id : %d, countNotDefault = %d\n", listEndPoint.get(0).id, listEndPoint.get(0).countNotDefault());
@@ -184,10 +181,9 @@ public class Hash {
           }
 
           // Read Requests entries
-          for(int c = 0; c < nbRequestDescription ; c++){
+          for(int c = 0; c < nbRequestDescription; c++){
             // Read endpoints line initializer
-
-            s= br.readLine();
+            s = br.readLine();
             parts = s.split(" ");
 
             int idVideo = Integer.parseInt(parts[0]);
@@ -196,10 +192,7 @@ public class Hash {
 
             Request requestToAdd = new Request(requestsCount, fromEndPoint, idVideo);
             listVideo.get(idVideo).addRequest(requestToAdd);
-            // 3 0 1500 ||| 1500 requests for video 3 coming from endpoint 0.
-
           }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -209,7 +202,7 @@ public class Hash {
     }
 
 
-
+    // Write listCache to the output file
     public boolean save(String name) {
         try {
             FileWriter fw = new FileWriter(name + ".out");
@@ -225,29 +218,152 @@ public class Hash {
     }
 
 
+    public void solveWithGeneticAlgorithm(){
+      originalCache = new ArrayList<>(listCache); // Save the cache of the local solution
+
+      // Parameters
+      int MAXGENERATION = 5000;
+
+
+      // debutIA
+      String chromosome = this.generateChromosome();
+      // FitnessCalc.setSolution(chromosome);
+
+      Population myPop = new Population(50, true, chromosome);
+      int generationCount = 0;
+      while(generationCount < MAXGENERATION){
+        generationCount++;
+        myPop = Algorithm.evolvePopulation(myPop);
+
+        // Display only 1/100 message
+        if (generationCount%100 == 0){
+          System.out.println("Generation: "+generationCount);
+          if ( myPop.getFittest().getFitness() > -1 ){
+            System.out.println("Score fittest : " + myPop.getFittest().getFitness());
+          }
+        }
+      }
+      System.out.println("Solution initiale : ");
+      System.out.println(chromosome);
+      System.out.println("Modification génétique :");
+      System.out.println(myPop.getFittest());
+      System.out.println("Différences : ");
+      System.out.println(compareBitwise(chromosome, myPop.getFittest().toString()));
+
+      if (myPop.getFittest().getFitness()>0){
+        System.out.println("Utilisation de la solution de l'algorithme genetique");
+        // Clean the listCache data
+        for (Cache cache : listCache) {
+          cache.resetCacheServer();
+        }
+        String[] bestIndividual = myPop.getFittest().toString().split("");
+        for (int i = 0; i < bestIndividual.length; i++){
+          if (bestIndividual[i].equals("1")){ // if video is copied to cache server
+            listCache.get(i%nbCaches).addVideo(listVideo.get(i/nbCaches)); // update cache list of the video
+          }
+        }
+      } else {
+        System.out.println("Solution de l'algorithme genetique rejetée");
+        System.out.println("Restauration des caches");
+        listCache = new ArrayList<>(originalCache);
+      }
+    }
 
     public static void main(String[] args) {
         Hash h = new Hash();
-        //String s= "C:\\Users\\Camille\\IdeaProjects\\hashcode2017\\data\\test";
+
         String s= args[0];
-        h.load(s);
 
-        h.solve();
+        h.load(s); // Read data
 
-        h.generateChromosome()
-        
+        h.solve(); // Find a local solution
+        h.solve(); // Find a local solution
+        h.solve(); // Find a local solution
+
+        h.solveWithGeneticAlgorithm(); // Try to optimize the local solution
+
         h.save(s);
     }
 
+    // Calculate inidividuals fitness
+    public static int getFitness(Individual individual) {
+        int fitness = 0;
+
+        // Reset cache server linked to a video
+        for (Video video : listVideo) {
+          video.resetCacheServer();
+        }
+        for (Cache cache : listCache) {
+          cache.resetCacheServer();
+        }
+
+        // Check validity (Cache server not overfull)
+        int[] sizeCache = new int[nbCaches];
+        int[] ecart = new int[nbCaches];
+        boolean eliminate = false;
+        int id_video;
+        int id_cache;
+        // Initialise variables
+        for (int i = 0 ; i < nbCaches; i++) {
+          sizeCache[i] = 0;
+          ecart[i] = 0;
+        }
+        // translate chromosome to object-based data
+        for (int i = 0; i < individual.size(); i++){
+          if (individual.getGene(i) == 1){ // if video is put in cache server
+            // System.out.println("Video n° "+ i/nbCaches + " dans cache n°" + i%nbCaches +" : " + (individual.getGene(i) == 1));
+            id_video = i/nbCaches; // because of the structure of the chromosome
+            id_cache = i%nbCaches; // because of the structure of the chromosome
+            sizeCache[id_cache] += listVideo.get(id_video).size; // add its size on sizeCache
+            listCache.get(id_cache).addVideo(listVideo.get(id_video)); // update cache list of the video
+          }
+        }
+        // check capacity of cache server
+        for (int i = 0; i < nbCaches; i++) {
+          if (sizeCache[i] > defaultSizeCache){
+            eliminate=true; // eliminate the cache server if cache server is overfull
+          }
+          ecart[i] = sizeCache[i] - defaultSizeCache;
+        }
+        // attribute points to eliminated cache server (to easily find a solution)
+        int sum = IntStream.of(ecart).sum();
+        sum = -1 * sum;
+        if (eliminate){
+            return sum;
+        }
+
+        // Compute the score of possible solution
+        fitness += Request.eval(listEndPoint);
+
+        return fitness;
+    }
+
+    // Compare two chromosome string
+    public static String compareBitwise(String string1, String string2){
+      String[] string1_split = string1.split("");
+      String[] string2_split = string2.split("");
+
+      StringBuilder result = new StringBuilder();
+      for (int i = 0; i < string1_split.length; i++) {
+        result.append((Integer.parseInt(string1_split[i])+Integer.parseInt(string2_split[i]))%2);
+      }
+
+      return result.toString();
+    }
+
+    // Generate a n x m chromosome where n represents videos and m the cache servers. 1 if video is copied on the corresponding cache server. 0 otherwise.
     public String generateChromosome(){
-      boolean[] partOfChromosome = new boolean[nbCaches];
       String chromosome;
+      boolean[] partOfChromosome = new boolean[nbCaches];
+
       StringBuilder chromosomeBuilder = new StringBuilder();
       for (Video video : listVideo) {
         partOfChromosome = new boolean[nbCaches];
+
         for (int cache : video.cache) {
           partOfChromosome[cache] = true;
         }
+
         for (boolean cache : partOfChromosome ) {
           chromosomeBuilder.append(cache?"1":"0");
         }
